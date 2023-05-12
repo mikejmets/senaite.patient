@@ -5,6 +5,7 @@ Changelog
 1.4.0 (unreleased)
 ------------------
 
+- #70 Fix Require MRN setting bug
 - #69 Fix Patient Workflows and Permissions
 - #68 Allow client local patients
 - #66 Fix widget view mode

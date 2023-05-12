@@ -28,7 +28,7 @@ from senaite.app.listing.utils import add_column
 from senaite.app.listing.utils import add_review_state
 from senaite.patient import check_installed
 from senaite.patient import messageFactory as _
-from senaite.patient.api import get_patient_by_mrn
+from senaite.patient import api as patient_api
 from zope.component import adapts
 from zope.component import getMultiAdapter
 from zope.interface import implements
@@ -120,7 +120,10 @@ class SamplesListingAdapter(object):
         item["PatientID"] = sample_patient_id
 
         # get the patient object
-        patient = self.get_patient_by_mrn(sample_patient_mrn)
+        if patient_api.is_patient_required():
+            patient = self.get_patient_by_mrn(sample_patient_mrn)
+        else:
+            patient = self.get_patient_by_id(sample_patient_id)
 
         if not patient:
             return
@@ -163,7 +166,15 @@ class SamplesListingAdapter(object):
             return None
         if self.is_patient_context():
             return self.context
-        return get_patient_by_mrn(mrn)
+        return patient_api.get_patient_by_mrn(mrn)
+
+    @viewcache
+    def get_patient_by_id(self, patient_id):
+        if not patient_id:
+            return None
+        if self.is_patient_context():
+            return self.context
+        return patient_api.get_patient_by_id(patient_id)
 
     @check_installed(None)
     def before_render(self):

@@ -128,6 +128,34 @@ def get_patient_by_mrn(mrn, full_object=True, include_inactive=False):
     return api.get_object(results[0])
 
 
+def get_patient_by_id(patient_id, full_object=True, include_inactive=False):
+    """Get a patient by Patient ID
+
+    :param patient_id: Unique patient id
+    :param full_object: If true, return objects instead of catalog brains
+    :param include_inactive: Also find inactive patients
+    :returns: Patient or None
+    """
+    query = {
+        "portal_type": "Patient",
+        "patient_id": api.safe_unicode(patient_id).encode("utf8"),
+        "is_active": True,
+    }
+    # Remove active index
+    if include_inactive:
+        query.pop("is_active", None)
+    results = patient_search(query)
+    count = len(results)
+    if count == 0:
+        return None
+    elif count > 1:
+        raise ValueError(
+            "Found {} Patients with ID {}".format(count, patient_id))
+    if full_object is False:
+        return results[0]
+    return api.get_object(results[0])
+
+
 def get_patient_catalog():
     """Returns the patient catalog
     """

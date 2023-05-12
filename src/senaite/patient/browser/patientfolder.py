@@ -60,7 +60,7 @@ class PatientFolderView(ListingView):
                 "url": "++add++Patient",
                 "permission": AddPatient,
                 "icon": "++resource++bika.lims.images/add.png"}
-            }
+        }
 
         self.icon = "{}/{}".format(
             self.portal_url, "senaite_theme/icon/patientfolder")
